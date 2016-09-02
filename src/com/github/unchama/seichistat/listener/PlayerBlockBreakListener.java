@@ -17,7 +17,7 @@ import com.github.unchama.seichistat.util.Util;
 
 public class PlayerBlockBreakListener implements Listener {
 	@EventHandler
-	public void onPlayerEvent(BlockBreakEvent event){
+	public void onPlayerWGEvent(BlockBreakEvent event){
 		//実行したプレイヤーを取得
 		Player player = event.getPlayer();
 		//もしサバイバルでなければ処理を終了
@@ -39,6 +39,21 @@ public class PlayerBlockBreakListener implements Listener {
  			if(SeichiStat.DEBUG){
  				player.sendMessage("num_rgblockの値:" + playerdata.num_rgbreak);
  			}
+			return;
+		}
+
+	}
+
+	@EventHandler
+	public void onPlayerSeichiEvent(BlockBreakEvent event){
+		//実行したプレイヤーを取得
+		Player player = event.getPlayer();
+		//もしサバイバルでなければ処理を終了
+		if(!player.getGameMode().equals(GameMode.SURVIVAL)){
+			return;
+		}
+		//整地ワールド外なら処理を終了
+		if(!player.getWorld().getName().equals("world_SW")){
 			return;
 		}
 

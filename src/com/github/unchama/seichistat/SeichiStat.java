@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.github.unchama.seichistat.commands.seichistatCommand;
 import com.github.unchama.seichistat.data.PlayerData;
 import com.github.unchama.seichistat.listener.PlayerBlockBreakListener;
 import com.github.unchama.seichistat.listener.PlayerJoinListener;
@@ -51,6 +52,10 @@ public class SeichiStat  extends JavaPlugin {
 		if(!sql.connect()){
 			getLogger().info("データベース初期処理にエラーが発生しました");
 		}
+
+		//コマンドの登録
+		commandlist = new HashMap<String, TabExecutor>();
+		commandlist.put("gacha",new seichistatCommand(plugin));
 
 		//リスナーの登録
 		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
