@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 import com.github.unchama.seichistat.SeichiStat;
 import com.github.unchama.seichistat.data.PlayerData;
+import com.github.unchama.seichistat.util.Util;
 
 
 public class PlayerBlockBreakListener implements Listener {
@@ -31,6 +32,15 @@ public class PlayerBlockBreakListener implements Listener {
 		UUID uuid = player.getUniqueId();
 		//UUIDを基にプレイヤーデータ取得
 		PlayerData playerdata = SeichiStat.playermap.get(uuid);
+
+		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
+		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
+			playerdata.num_rgbreak ++;
+ 			if(SeichiStat.DEBUG){
+ 				player.sendMessage("num_rgblockの値:" + playerdata.num_rgbreak);
+ 			}
+			return;
+		}
 
 	}
 }
