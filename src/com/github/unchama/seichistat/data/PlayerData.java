@@ -29,6 +29,6 @@ public class PlayerData {
 
 	//オフラインかどうか
 	public boolean isOffline() {
-		return SeichiStat.plugin.getServer().getPlayer(name) == null;
+		return SeichiStat.plugin.getServer().getPlayer(uuid) == null;
 	}
 }
