@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -82,6 +84,12 @@ public class SeichiStat  extends JavaPlugin {
 		getLogger().info("SeichiStat is Enabled!");
 
 	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+		return commandlist.get(cmd.getName()).onCommand(sender, cmd, label, args);
+	}
+
 	@Override
 	public void onDisable(){
 		//全てのタスクをキャンセル

@@ -3,8 +3,8 @@ main: com.github.unchama.seichistat.SeichiStat
 version: 0.0.2
 
 commands:
-  stat:
+  seichistat:
       description: This is a stat command.
-      usage: /<command> <add/list/remove/clear>
+      usage: /<command> <help>
       permission: seichistat.command
       permission-message: You don't have <permission>
