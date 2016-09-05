@@ -1,10 +1,10 @@
 name: SeichiStat
 main: com.github.unchama.seichistat.SeichiStat
-version: 0.0.1
+version: 0.0.2
 
 commands:
   stat:
       description: This is a stat command.
       usage: /<command> <add/list/remove/clear>
-      permission: seichistat.stat
+      permission: seichistat.command
       permission-message: You don't have <permission>

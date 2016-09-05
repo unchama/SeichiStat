@@ -55,7 +55,7 @@ public class SeichiStat  extends JavaPlugin {
 
 		//コマンドの登録
 		commandlist = new HashMap<String, TabExecutor>();
-		commandlist.put("gacha",new seichistatCommand(plugin));
+		commandlist.put("seichistat",new seichistatCommand(plugin));
 
 		//リスナーの登録
 		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
