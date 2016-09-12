@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -15,9 +16,11 @@ import org.bukkit.scheduler.BukkitTask;
 import com.github.unchama.seichistat.commands.seichistatCommand;
 import com.github.unchama.seichistat.data.PlayerData;
 import com.github.unchama.seichistat.listener.PlayerBlockBreakListener;
+import com.github.unchama.seichistat.listener.PlayerBucketListener;
 import com.github.unchama.seichistat.listener.PlayerJoinListener;
 import com.github.unchama.seichistat.listener.PlayerQuitListener;
 import com.github.unchama.seichistat.task.MinuteTaskRunnable;
+import com.github.unchama.seichistat.util.Util;
 
 
 
@@ -63,6 +66,7 @@ public class SeichiStat  extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerBlockBreakListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerBucketListener(), this);
 
 		//オンラインの全てのプレイヤーを処理
 		for(Player p : getServer().getOnlinePlayers()){
@@ -95,9 +99,32 @@ public class SeichiStat  extends JavaPlugin {
 		//全てのタスクをキャンセル
 		stopAllTaskRunnable();
 
-		for(PlayerData playerdata : playermap.values()){
+		for(Player p : getServer().getOnlinePlayers()){
+			//UUIDを取得
+			UUID uuid = p.getUniqueId();
+			//プレイヤーデータ取得
+			PlayerData playerdata = playermap.get(uuid);
+			//念のためエラー分岐
+			if(playerdata == null){
+				p.sendMessage(ChatColor.RED + "playerdataの保存に失敗しました。管理者に報告してください");
+				getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiAssist[Ondisable処理]でエラー発生");
+				getLogger().warning(Util.getName(p)+ "のplayerdataの保存失敗。開発者に報告してください");
+				continue;
+			}
+			//quit時とondisable時、プレイヤーデータを最新の状態に更新
+			playerdata.UpdateonQuit(p);
+
+			//mysqlに送信
 			if(!sql.savePlayerData(playerdata)){
 				getLogger().info(playerdata.name + "のデータ保存に失敗しました");
+			}else{
+				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のプレイヤーデータ保存完了");
+			}
+			//ログインフラグ折る
+			if(!sql.logoutPlayerData(playerdata)){
+				getLogger().warning(playerdata.name + "のloginflag->false化に失敗しました");
+			}else{
+				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のloginflag回収完了");
 			}
 		}
 

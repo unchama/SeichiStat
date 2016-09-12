@@ -2,13 +2,16 @@ package com.github.unchama.seichistat.listener;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import com.github.unchama.seichistat.SeichiStat;
 import com.github.unchama.seichistat.data.PlayerData;
@@ -18,6 +21,9 @@ import com.github.unchama.seichistat.util.Util;
 public class PlayerBlockBreakListener implements Listener {
 	@EventHandler
 	public void onPlayerWGEvent(BlockBreakEvent event){
+		if(SeichiStat.DEBUG){
+			Util.sendEveryMessage("ブロックブレイクイベントが呼び出された！");
+		}
 		//実行したプレイヤーを取得
 		Player player = event.getPlayer();
 		//もしサバイバルでなければ処理を終了
@@ -44,18 +50,49 @@ public class PlayerBlockBreakListener implements Listener {
 
 	}
 
+	//おんぷれいやーちぃたぁいべんと
 	@EventHandler
-	public void onPlayerSeichiEvent(BlockBreakEvent event){
+	public void onPlayerCheaterEvent(BlockPlaceEvent event){
+		if(SeichiStat.DEBUG){
+			Util.sendEveryMessage("ブロックプレイスイベントが呼び出された！");
+		}
+
 		//実行したプレイヤーを取得
 		Player player = event.getPlayer();
 		//もしサバイバルでなければ処理を終了
 		if(!player.getGameMode().equals(GameMode.SURVIVAL)){
 			return;
 		}
-		//整地ワールド外なら処理を終了
-		if(!player.getWorld().getName().equals("world_SW")){
-			return;
+
+		//プレイヤー名を取得
+		String name = player.getName().toLowerCase();
+
+		//設置されるブロックを取得
+		Block block = event.getBlock();
+		//ブロックの座標を取得
+		Location loc = block.getLocation();
+		//ブロックのタイプを取得
+		Material material = block.getType();
+		switch(material){
+		case LAVA:
+			Util.sendAdminMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
+			break;
+		case STATIONARY_LAVA:
+			Util.sendAdminMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
+			break;
+		default:
+			break;
 		}
 
 	}
+
+
 }
+
+
+/*
+//整地ワールド外なら処理を終了
+if(!player.getWorld().getName().equals("world_SW")){
+	return;
+}
+*/

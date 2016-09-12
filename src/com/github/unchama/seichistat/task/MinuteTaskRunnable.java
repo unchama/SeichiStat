@@ -30,10 +30,6 @@ public class MinuteTaskRunnable extends BukkitRunnable{
 			Util.sendEveryMessage("プレイヤーの１分間の処理を実行");
 		}
 
-		//オンラインプレイヤーの人数を取得
-		int onlinenums = plugin.getServer().getOnlinePlayers().size();
-
-
 		//playermapが空の時return
 		if(playermap.isEmpty()){
 			return;
@@ -55,7 +51,7 @@ public class MinuteTaskRunnable extends BukkitRunnable{
 			//プレイヤー名を取得
 			String name = Util.getName(player);
 			//総プレイ時間更新
-			playerdata.playtick = player.getStatistic(org.bukkit.Statistic.PLAY_ONE_TICK);
+			playerdata.calcPlayTick(player);
 
 
 

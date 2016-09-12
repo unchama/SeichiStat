@@ -26,6 +26,16 @@ public class Util {
 		return Integer.parseInt(s);
 	}
 
+
+	public static void sendAdminMessage(String str){
+		SeichiStat plugin = SeichiStat.plugin;
+		for ( Player player : plugin.getServer().getOnlinePlayers() ) {
+			if(player.hasPermission("SeichiStat.admin")){
+				player.sendMessage(str);
+			}
+		}
+	}
+
 	public static void sendEveryMessage(String str){
 		SeichiStat plugin = SeichiStat.plugin;
 		for ( Player player : plugin.getServer().getOnlinePlayers() ) {
