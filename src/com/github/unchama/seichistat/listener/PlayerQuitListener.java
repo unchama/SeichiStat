@@ -30,7 +30,7 @@ public class PlayerQuitListener implements Listener {
 		//念のためエラー分岐
 		if(playerdata == null){
 			player.sendMessage(ChatColor.RED + "playerdataがありません。管理者に報告してください");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[Quit処理]でエラー発生");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[Quit処理]でエラー");
 			plugin.getLogger().warning(player.getName() + "のplayerdataがありません。開発者に報告してください");
 			return;
 		}
@@ -42,13 +42,13 @@ public class PlayerQuitListener implements Listener {
 		if(!sql.savePlayerData(playerdata)){
 			plugin.getLogger().warning(playerdata.name + "のデータ保存に失敗しました");
 		}else{
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + player.getName() + "のプレイヤーデータ保存完了");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + player.getName() + "のseichistat保存完了");
 		}
 		//ログインフラグ折る
 		if(!sql.logoutPlayerData(playerdata)){
 			plugin.getLogger().warning(playerdata.name + "のloginflag->false化に失敗しました");
 		}else{
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + player.getName() + "のloginflag回収完了");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + player.getName() + "のseichistat->loginflag回収完了");
 		}
 
 		//マルチサーバー対応の為の処理

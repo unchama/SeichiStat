@@ -4,6 +4,7 @@ package com.github.unchama.seichistat.task;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,27 +35,21 @@ public class MinuteTaskRunnable extends BukkitRunnable{
 		if(playermap.isEmpty()){
 			return;
 		}
-		//プレイヤーマップに記録されているすべてのplayerdataについての処理
-		for(PlayerData playerdata : playermap.values()){
-			//プレイヤーのオンラインオフラインに関係なく処理
-
-			//プレイヤーがオフラインの時処理を終了、次のプレイヤーへ
-			if(playerdata.isOffline()){
-				if(SeichiStat.DEBUG){
-					Util.sendEveryMessage(playerdata.name + "は不在により処理中止");
-				}
+		for(Player p : plugin.getServer().getOnlinePlayers()){
+			//プレイﾔｰが必ずオンラインと分かっている処理
+			//UUIDを取得
+			UUID uuid = p.getUniqueId();
+			//プレイヤーデータ取得
+			PlayerData playerdata = playermap.get(uuid);
+			//念のためエラー分岐
+			if(playerdata == null){
+				p.sendMessage(ChatColor.RED + "playerdataの読込に失敗。管理者に報告してください");
+				plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[MituteTask]でエラー発生");
+				plugin.getLogger().warning(Util.getName(p)+ "のplayerdataの読込失敗。開発者に報告してください");
 				continue;
 			}
-			//プレイﾔｰが必ずオンラインと分かっている処理
-			//プレイヤーを取得
-			Player player = plugin.getServer().getPlayer(playerdata.uuid);
-			//プレイヤー名を取得
-			String name = Util.getName(player);
 			//総プレイ時間更新
-			playerdata.calcPlayTick(player);
-
-
-
+			playerdata.calcPlayTick(p);
 		}
 
 	}

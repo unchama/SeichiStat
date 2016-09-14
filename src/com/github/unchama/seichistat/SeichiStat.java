@@ -17,6 +17,7 @@ import com.github.unchama.seichistat.commands.seichistatCommand;
 import com.github.unchama.seichistat.data.PlayerData;
 import com.github.unchama.seichistat.listener.PlayerBlockBreakListener;
 import com.github.unchama.seichistat.listener.PlayerBucketListener;
+import com.github.unchama.seichistat.listener.PlayerChatListener;
 import com.github.unchama.seichistat.listener.PlayerJoinListener;
 import com.github.unchama.seichistat.listener.PlayerQuitListener;
 import com.github.unchama.seichistat.task.MinuteTaskRunnable;
@@ -67,6 +68,7 @@ public class SeichiStat  extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerBlockBreakListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerBucketListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
 
 		//オンラインの全てのプレイヤーを処理
 		for(Player p : getServer().getOnlinePlayers()){
@@ -75,7 +77,7 @@ public class SeichiStat  extends JavaPlugin {
 			//プレイヤーデータを生成
 			PlayerData playerdata = sql.loadPlayerData(p);
 			if(playerdata==null){
-				p.sendMessage("playerdataの読み込みエラーです。管理者に報告してください。");
+				getLogger().warning(p.getName() + "のplayerdataの読み込みエラーです。管理者に報告してください");
 				continue;
 			}
 			//プレイヤーマップにプレイヤーを追加
@@ -106,8 +108,8 @@ public class SeichiStat  extends JavaPlugin {
 			PlayerData playerdata = playermap.get(uuid);
 			//念のためエラー分岐
 			if(playerdata == null){
-				p.sendMessage(ChatColor.RED + "playerdataの保存に失敗しました。管理者に報告してください");
-				getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiAssist[Ondisable処理]でエラー発生");
+				p.sendMessage(ChatColor.RED + "playerdataの保存失敗。管理者に報告してください");
+				getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[Ondisable]でエラー");
 				getLogger().warning(Util.getName(p)+ "のplayerdataの保存失敗。開発者に報告してください");
 				continue;
 			}
@@ -116,15 +118,15 @@ public class SeichiStat  extends JavaPlugin {
 
 			//mysqlに送信
 			if(!sql.savePlayerData(playerdata)){
-				getLogger().info(playerdata.name + "のデータ保存に失敗しました");
+				getLogger().warning(playerdata.name + "のデータ保存に失敗しました");
 			}else{
-				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のプレイヤーデータ保存完了");
+				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のseichistat保存完了");
 			}
 			//ログインフラグ折る
 			if(!sql.logoutPlayerData(playerdata)){
 				getLogger().warning(playerdata.name + "のloginflag->false化に失敗しました");
 			}else{
-				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のloginflag回収完了");
+				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のseichistat->loginflag回収完了");
 			}
 		}
 

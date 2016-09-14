@@ -30,7 +30,7 @@ public class Util {
 	public static void sendAdminMessage(String str){
 		SeichiStat plugin = SeichiStat.plugin;
 		for ( Player player : plugin.getServer().getOnlinePlayers() ) {
-			if(player.hasPermission("SeichiStat.admin")){
+			if(player.hasPermission("seichistat.admin")){
 				player.sendMessage(str);
 			}
 		}

@@ -1,5 +1,6 @@
 package com.github.unchama.seichistat.listener;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -19,6 +20,9 @@ import com.github.unchama.seichistat.util.Util;
 
 
 public class PlayerBlockBreakListener implements Listener {
+	private SeichiStat plugin = SeichiStat.plugin;
+	HashMap<UUID,PlayerData> playermap = SeichiStat.playermap;
+
 	@EventHandler
 	public void onPlayerWGEvent(BlockBreakEvent event){
 		if(SeichiStat.DEBUG){
@@ -37,7 +41,7 @@ public class PlayerBlockBreakListener implements Listener {
 		//UUIDを取得
 		UUID uuid = player.getUniqueId();
 		//UUIDを基にプレイヤーデータ取得
-		PlayerData playerdata = SeichiStat.playermap.get(uuid);
+		PlayerData playerdata = playermap.get(uuid);
 
 		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
 		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
@@ -59,8 +63,16 @@ public class PlayerBlockBreakListener implements Listener {
 
 		//実行したプレイヤーを取得
 		Player player = event.getPlayer();
-		//もしサバイバルでなければ処理を終了
-		if(!player.getGameMode().equals(GameMode.SURVIVAL)){
+
+		//UUIDを取得
+		UUID uuid = player.getUniqueId();
+		//playerdataを取得
+		PlayerData playerdata = playermap.get(uuid);
+		//念のためエラー分岐
+		if(playerdata == null){
+			player.sendMessage(ChatColor.RED + "playerdataがありません。管理者に報告してください");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[blockplaceevent]でエラー発生");
+			plugin.getLogger().warning(player.getName() + "のplayerdataがありません。開発者に報告してください");
 			return;
 		}
 
@@ -76,9 +88,13 @@ public class PlayerBlockBreakListener implements Listener {
 		switch(material){
 		case LAVA:
 			Util.sendAdminMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
+			playerdata.num_cheatdabaa++;
 			break;
 		case STATIONARY_LAVA:
 			Util.sendAdminMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
+			playerdata.num_cheatdabaa++;
 			break;
 		default:
 			break;

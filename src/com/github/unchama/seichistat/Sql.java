@@ -172,6 +172,9 @@ public class Sql{
 				",add column if not exists playtick int default 0" +
 				",add column if not exists loginflag boolean default false" +
 				",add column if not exists num_magmadabaa int default 0" +
+				",add column if not exists num_chat int default 0" +
+				",add column if not exists num_cheatdabaa int default 0" +
+				",add column if not exists num_command int default 0" +
 				",add index if not exists name_index(name)" +
 				"";
 		return putCommand(command);
@@ -206,8 +209,8 @@ public class Sql{
  			//新しくuuidとnameを設定し行を作成
  			//insert into playerdata (name,uuid) VALUES('unchima','UNCHAMA')
  			command = "insert into " + table
- 	 				+ " (name,uuid) values('" + name
- 	 				+ "','" + struuid + "')";
+ 	 				+ " (name,uuid,loginflag) values('" + name
+ 	 				+ "','" + struuid+ "','1')";
  			if(!putCommand(command)){
  				return null;
  			}
@@ -239,20 +242,20 @@ public class Sql{
 	 				e.printStackTrace();
 	 				return null;
 	 			}
-	 	 		if(i < 5&&flag){
+	 	 		if(i >= 2&&flag){
+	 	 			//諦める
+	 	 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + p.getName() + "のloginflagがtrueの為、プレイヤーデータが取得できませんでした(SeichiStat)");
+	 	 			return null;
+	 	 		}
+	 	 		if(flag){
 	 	 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + p.getName() + "のloginflag=false待機…(" + (i+1) + "回目)(SeichiStat)");
 	 	 			//次のリクエストまで1000ms待つ
 	 	 			try {
-						Thread.sleep(2000);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();
 					}
-	 	 		}
-	 	 		if(i > 5&&flag){
-	 	 			//諦める
-	 	 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + p.getName() + "のloginflagがtrueの為、プレイヤーデータが取得できませんでした(SeichiStat)");
-	 	 			return null;
 	 	 		}
 	 	 		i++;
  			}
@@ -280,6 +283,9 @@ public class Sql{
  	 				playerdata.num_rgbreak = rs.getInt("num_rgbreak");
  	 				playerdata.playtick = rs.getInt("playtick");
  	 				playerdata.num_magmadabaa = rs.getInt("num_magmadabaa");
+ 	 				playerdata.num_chat = rs.getInt("num_chat");
+ 	 				playerdata.num_cheatdabaa = rs.getInt("num_cheatdabaa");
+ 	 				playerdata.num_command = rs.getInt("num_command");
 
  				  }
  				rs.close();
@@ -321,6 +327,9 @@ public class Sql{
 				+ ",num_rgbreak = " + Integer.toString(playerdata.num_rgbreak)
 				+ ",playtick = " + Integer.toString(playerdata.playtick)
 				+ ",num_magmadabaa = " + Integer.toString(playerdata.num_magmadabaa)
+				+ ",num_chat = " + Integer.toString(playerdata.num_chat)
+				+ ",num_cheatdabaa = " + Integer.toString(playerdata.num_cheatdabaa)
+				+ ",num_command = " + Integer.toString(playerdata.num_command)
 
 				+ " where uuid like '" + struuid + "'";
 

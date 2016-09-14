@@ -21,6 +21,12 @@ public class PlayerData {
 	public int playtick;
 	//マグマダバア回数
 	public int num_magmadabaa;
+	//チャット回数
+	public int num_chat;
+	//チートダバァ回数
+	public int num_cheatdabaa;
+	//コマンド試行回数
+	public int num_command;
 
 
 	public PlayerData(Player player){
@@ -31,6 +37,9 @@ public class PlayerData {
 		servertick = player.getStatistic(org.bukkit.Statistic.PLAY_ONE_TICK);
 		playtick = 0;
 		num_magmadabaa = 0;
+		num_chat = 0;
+		num_cheatdabaa = 0;
+		num_command = 0;
 	}
 
 	//オフラインかどうか

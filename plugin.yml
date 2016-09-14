@@ -1,6 +1,6 @@
 name: SeichiStat
 main: com.github.unchama.seichistat.SeichiStat
-version: 0.1.0
+version: 0.1.1
 
 commands:
   seichistat:

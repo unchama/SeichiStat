@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,10 +26,6 @@ public class PlayerBucketListener implements Listener {
 	public void onPlayerActiveSkillToggleEvent(PlayerInteractEvent event){
 		//プレイヤーを取得
 		Player player = event.getPlayer();
-		//もしサバイバルでなければ処理を終了
-		if(!player.getGameMode().equals(GameMode.SURVIVAL)){
-			return;
-		}
 		//プレイヤーの起こしたアクションの取得
 		Action action = event.getAction();
 		//アクションを起こした手を取得
@@ -55,8 +50,8 @@ public class PlayerBucketListener implements Listener {
 				playerdata.num_magmadabaa++;
 				//プレイヤー座標を取得
 				Location loc = player.getLocation();
-
 				Util.sendAdminMessage(ChatColor.RED + player.getName() + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
+				plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + player.getName() + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
 				return;
 
 			}
