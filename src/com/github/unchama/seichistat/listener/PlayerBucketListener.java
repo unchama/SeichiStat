@@ -50,8 +50,8 @@ public class PlayerBucketListener implements Listener {
 				playerdata.num_magmadabaa++;
 				//プレイヤー座標を取得
 				Location loc = player.getLocation();
-				Util.sendAdminMessage(ChatColor.RED + player.getName() + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
-				plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + player.getName() + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
+				Util.sendAdminMessage(ChatColor.RED + player.getName() + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
+				plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + player.getName() + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
 				return;
 
 			}

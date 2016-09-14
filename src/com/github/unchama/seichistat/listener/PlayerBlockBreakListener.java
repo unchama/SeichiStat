@@ -87,13 +87,13 @@ public class PlayerBlockBreakListener implements Listener {
 		Material material = block.getType();
 		switch(material){
 		case LAVA:
-			Util.sendAdminMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
+			Util.sendAdminMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にLAVAを直接設置しました");
 			playerdata.num_cheatdabaa++;
 			break;
 		case STATIONARY_LAVA:
-			Util.sendAdminMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
+			Util.sendAdminMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")にSTATIONARY_LAVAを直接設置しました");
 			playerdata.num_cheatdabaa++;
 			break;
 		default:
