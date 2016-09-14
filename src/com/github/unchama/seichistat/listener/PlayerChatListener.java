@@ -52,6 +52,13 @@ public class PlayerChatListener implements Listener {
 			Util.sendEveryMessage("PlayerCommandPreprocessEventが呼び出された！");
 		}
 
+		//コマンド文取得
+		String cmd = event.getMessage();
+		if(cmd.equalsIgnoreCase("/spawn")
+				|| cmd.equalsIgnoreCase("/home")
+				|| cmd.equalsIgnoreCase("/hub")){
+			return;
+		}
 		//実行したプレイヤーを取得
 		Player player = event.getPlayer();
 		//UUIDを取得
@@ -67,6 +74,6 @@ public class PlayerChatListener implements Listener {
 		}
 		//回数+1
 		playerdata.num_command++;
-		Util.sendAdminMessage(ChatColor.DARK_GRAY + "COMMAND > " + player.getName() + ": " + event.getMessage());
+		Util.sendAdminMessage(ChatColor.DARK_GRAY + "COMMAND > " + player.getName() + ": " + cmd);
 	}
 }
