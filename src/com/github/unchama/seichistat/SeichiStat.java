@@ -72,16 +72,7 @@ public class SeichiStat  extends JavaPlugin {
 
 		//オンラインの全てのプレイヤーを処理
 		for(Player p : getServer().getOnlinePlayers()){
-			//UUIDを取得
-			UUID uuid = p.getUniqueId();
-			//プレイヤーデータを生成
-			PlayerData playerdata = sql.loadPlayerData(p);
-			if(playerdata==null){
-				getLogger().warning(p.getName() + "のplayerdataの読み込みエラーです。管理者に報告してください");
-				continue;
-			}
-			//プレイヤーマップにプレイヤーを追加
-			playermap.put(uuid,playerdata);
+			sql.loadPlayerData(p);
 		}
 
 		//タスクスタート
