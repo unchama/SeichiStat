@@ -43,17 +43,23 @@ public class PlayerBlockBreakListener implements Listener {
 		UUID uuid = player.getUniqueId();
 		//UUIDを基にプレイヤーデータ取得
 		PlayerData playerdata = playermap.get(uuid);
-		
-		List<String[]> cresult = Util.getCoreProtect().performLookup(10000, null, null, null, null, null, 1, block.getLocation());
-		
+
+		List<String[]> cresult = Util.getCoreProtect().blockLookup(block, 1000);
+		//Util.getCoreProtect().blockLookup(block, 1000);
+
 		//player.sendMessage(ChatColor.RED + "表示...");
 		String s = ChatColor.RED + "表示..." + ChatColor.RESET +"";
-		for(String[] n : cresult){
-			StringBuffer buf = new StringBuffer();
-			for (int i = 0; i < n.length; i++) {
-			buf.append(n[i]);
+		if(cresult != null){
+			for(String[] n : cresult){
+
+				StringBuffer buf = new StringBuffer();
+				for (int i = 0; i < n.length; i++) {
+				buf.append(" " + n[i]);
+				}
+				plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "" + buf.toString());
+				//s = s + "," + buf.toString();
+
 			}
-			s = s + "," + buf.toString();
 		}
 		player.sendMessage(s);
 
