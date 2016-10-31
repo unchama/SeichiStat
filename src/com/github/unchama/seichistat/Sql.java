@@ -9,10 +9,11 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.github.unchama.seichistat.data.PlayerData;
+import com.github.unchama.seichistat.task.PlayerDataLoadTaskRunnable;
+import com.github.unchama.seichistat.task.PlayerDataSaveTaskRunnable;
 import com.github.unchama.seichistat.util.Util;
 
 //MySQL操作関数
@@ -20,7 +21,7 @@ public class Sql{
 	private SeichiStat plugin = SeichiStat.plugin;
 	private HashMap<UUID,PlayerData> playermap = SeichiStat.playermap;
 	private final String url, db, id, pw;
-	private Connection con = null;
+	public Connection con = null;
 	private Statement stmt = null;
 	private ResultSet rs = null;
 	public static String exc;
@@ -32,6 +33,33 @@ public class Sql{
 		this.db = db;
 		this.id = id;
 		this.pw = pw;
+	}
+
+	//接続正常ならtrue、そうでなければ再接続試行後正常でtrue、だめならfalseを返す
+	public boolean checkConnection(){
+		try {
+			if(con.isClosed()){
+				java.lang.System.out.println("sqlConnectionクローズを検出。再接続試行");
+				con = (Connection) DriverManager.getConnection(url, id, pw);
+			}
+			if(stmt.isClosed()){
+				java.lang.System.out.println("sqlStatementクローズを検出。再接続試行");
+				stmt = con.createStatement();
+				//connectDB();
+			}
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    	//イクセプションった時に接続再試行
+	    	if(connectMySQL()){
+	    		plugin.getLogger().info("sqlコネクション正常");
+	    		return true;
+	    	}else{
+	    		plugin.getLogger().warning("sqlコネクション不良を検出");
+	    		return false;
+	    	}
+		}
+		plugin.getLogger().info("sqlコネクション正常");
+		return true;
 	}
 
 	/**
@@ -225,120 +253,25 @@ public class Sql{
  			if(SeichiStat.DEBUG){
  				p.sendMessage("sqlにデータが保存されています。");
  			}
-
- 	 		Thread th = new Thread(new Runnable(){
-
- 				@Override
- 				public void run() {
- 					//同ステートメントだとmysqlの処理がバッティングした時に止まってしまうので別ステートメントを作成する
- 					Statement stmt2 = null;
- 					try {
- 						stmt2 = con.createStatement();
- 					} catch (SQLException e1) {
- 						e1.printStackTrace();
- 					}
- 					//同時にresultsetも別で作成しておく
- 					ResultSet rs2 = null;
-
- 					//loginflag判別処理
- 					Boolean flag = true;
- 					int i = 0;
- 					String command = "";
-
- 					//flagがfalseになるまで繰り返す
- 					while(flag){
- 			 	 		command = "select loginflag from " + table
- 			 	 				+ " where uuid = '" + struuid + "'";
- 			 	 		try{
- 			 				rs2 = stmt2.executeQuery(command);
- 			 				while (rs2.next()) {
- 			 					   flag = rs2.getBoolean("loginflag");
- 			 					  }
- 			 				rs2.close();
- 			 			} catch (SQLException e) {
- 			 				java.lang.System.out.println("sqlクエリの実行に失敗しました。以下にエラーを表示します");
- 			 				exc = e.getMessage();
- 			 				e.printStackTrace();
- 			 				return;
- 			 			}
- 			 	 		if(i >= 10&&flag){
- 			 	 			//強制取得実行
- 			 	 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + p.getName() + "のplayerdata強制取得実行(seichistat)");
- 			 	 			break;
- 			 	 		}
- 			 	 		if(flag){
- 			 	 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + p.getName() + "のloginflag=false待機…(" + (i+1) + "回目)(seichistat)");
- 			 	 			//次のリクエストまで待つ
- 			 	 			try {
- 								Thread.sleep(500);	//ここに待機時間を入れる(ms)
- 							} catch (InterruptedException e) {
- 								e.printStackTrace();
- 							}
- 			 	 		}
- 			 	 		i++;
- 					}
-
- 		 			//loginflag書き換え処理
- 		 			command = "update " + table
- 								+ " set loginflag = true"
- 								+ " where uuid like '" + struuid + "'";
- 		 			try {
- 		 				stmt2.executeUpdate(command);
- 		 			} catch (SQLException e) {
- 		 				java.lang.System.out.println("sqlクエリの実行に失敗しました。以下にエラーを表示します");
- 		 				exc = e.getMessage();
- 		 				e.printStackTrace();
- 		 				return;
- 		 			}
-
- 		 			//PlayerDataを新規作成
- 		 			PlayerData playerdata = new PlayerData(p);
-
- 		 			//playerdataをsqlデータから得られた値で更新
- 		 			command = "select * from " + table
- 		 					+ " where uuid like '" + struuid + "'";
- 		 			try{
- 		 				rs2 = stmt2.executeQuery(command);
- 		 				while (rs2.next()) {
- 		 					//各種数値
- 		 	 				playerdata.num_rgbreak = rs2.getInt("num_rgbreak");
- 		 	 				playerdata.playtick = rs2.getInt("playtick");
- 		 	 				playerdata.num_magmadabaa = rs2.getInt("num_magmadabaa");
- 		 	 				playerdata.num_chat = rs2.getInt("num_chat");
- 		 	 				playerdata.num_cheatdabaa = rs2.getInt("num_cheatdabaa");
- 		 	 				playerdata.num_command = rs2.getInt("num_command");
- 		 				  }
- 		 				rs2.close();
- 		 			} catch (SQLException e) {
- 		 				java.lang.System.out.println("sqlクエリの実行に失敗しました。以下にエラーを表示します");
- 		 				exc = e.getMessage();
- 		 				e.printStackTrace();
- 		 				return;
- 		 			}
- 		 			//念のためstatement閉じておく
- 		 			try {
- 						stmt2.close();
- 					} catch (SQLException e) {
- 						e.printStackTrace();
- 					}
-
- 		 			if(SeichiStat.DEBUG){
- 		 				p.sendMessage("sqlデータで更新しました");
- 		 			}
- 		 			//更新したplayerdataをplayermapに追加
- 		 			playermap.put(uuid, playerdata);
- 		 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のプレイヤーデータ取得完了(seichistat)");
- 		 			return;
- 				}
- 			});
- 	 		th.start();
- 	 		return true;
+ 			new PlayerDataLoadTaskRunnable(p).runTaskTimerAsynchronously(plugin, 20, 20);
+ 			//new PlayerDataUpdateOnJoinRunnable(p).runTaskTimer(plugin, 30, 20);
+ 			return true;
  		}else{
  			//mysqlに該当するplayerdataが2個以上ある時エラーを吐く
  			Bukkit.getLogger().info(Util.getName(p) + "のplayerdata読込時に原因不明のエラー発生(seichistat)");
  			return false;
  		}
 	}
+	//ondisable"以外"の時のプレイヤーデータセーブ処理(loginflag折りません)
+	public void savePlayerData(PlayerData playerdata){
+		new PlayerDataSaveTaskRunnable(playerdata,false,false).runTaskAsynchronously(plugin);
+	}
+
+	//ondisable"以外"の時のプレイヤーデータセーブ処理(ログアウト時に使用、loginflag折ります)
+	public void saveQuitPlayerData(PlayerData playerdata){
+		new PlayerDataSaveTaskRunnable(playerdata,false,true).runTaskAsynchronously(plugin);
+	}
+	/*
 	public boolean savePlayerData(PlayerData playerdata) {
 		//引数のplayerdataをsqlにデータを送信
 
@@ -365,7 +298,9 @@ public class Sql{
 
 		return putCommand(command);
 	}
+	*/
 
+	/*
 	//loginflagのフラグ折る処理(ondisable時とquit時に実行させる)
 	public boolean logoutPlayerData(PlayerData playerdata) {
 		String table = SeichiStat.PLAYERDATA_TABLENAME;
@@ -383,5 +318,6 @@ public class Sql{
 		return putCommand(command);
 
 	}
+	*/
 
 }

@@ -21,6 +21,7 @@ import com.github.unchama.seichistat.listener.PlayerChatListener;
 import com.github.unchama.seichistat.listener.PlayerJoinListener;
 import com.github.unchama.seichistat.listener.PlayerQuitListener;
 import com.github.unchama.seichistat.task.MinuteTaskRunnable;
+import com.github.unchama.seichistat.task.PlayerDataSaveTaskRunnable;
 import com.github.unchama.seichistat.util.Util;
 
 
@@ -107,18 +108,7 @@ public class SeichiStat  extends JavaPlugin {
 			//quit時とondisable時、プレイヤーデータを最新の状態に更新
 			playerdata.UpdateonQuit(p);
 
-			//mysqlに送信
-			if(!sql.savePlayerData(playerdata)){
-				getLogger().warning(playerdata.name + "のデータ保存に失敗しました");
-			}else{
-				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のseichistat保存完了");
-			}
-			//ログインフラグ折る
-			if(!sql.logoutPlayerData(playerdata)){
-				getLogger().warning(playerdata.name + "のloginflag->false化に失敗しました");
-			}else{
-				getServer().getConsoleSender().sendMessage(ChatColor.GREEN + p.getName() + "のseichistat->loginflag回収完了");
-			}
+			new PlayerDataSaveTaskRunnable(playerdata,true,true).run();
 		}
 
 		if(!sql.disconnect()){
