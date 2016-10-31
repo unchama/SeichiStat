@@ -1,6 +1,7 @@
 package com.github.unchama.seichistat.listener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -42,6 +43,19 @@ public class PlayerBlockBreakListener implements Listener {
 		UUID uuid = player.getUniqueId();
 		//UUIDを基にプレイヤーデータ取得
 		PlayerData playerdata = playermap.get(uuid);
+		
+		List<String[]> cresult = Util.getCoreProtect().performLookup(10000, null, null, null, null, null, 1, block.getLocation());
+		
+		//player.sendMessage(ChatColor.RED + "表示...");
+		String s = ChatColor.RED + "表示..." + ChatColor.RESET +"";
+		for(String[] n : cresult){
+			StringBuffer buf = new StringBuffer();
+			for (int i = 0; i < n.length; i++) {
+			buf.append(n[i]);
+			}
+			s = s + "," + buf.toString();
+		}
+		player.sendMessage(s);
 
 		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
 		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
