@@ -47,6 +47,12 @@ public class PlayerDataLoadTaskRunnable extends BukkitRunnable {
 
 	@Override
 	public void run() {
+		//対象プレイヤーがオフラインなら処理終了
+		if(SeichiStat.plugin.getServer().getPlayer(uuid) == null){
+			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + p.getName() + "はオフラインの為取得処理を中断");
+			cancel();
+			return;
+		}
 		//同ステートメントだとmysqlの処理がバッティングした時に止まってしまうので別ステートメントを作成する
 		//sqlコネクションチェック
 		sql.checkConnection();

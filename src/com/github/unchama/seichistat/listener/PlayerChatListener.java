@@ -74,6 +74,6 @@ public class PlayerChatListener implements Listener {
 		}
 		//回数+1
 		playerdata.num_command++;
-		Util.sendAdminMessage(ChatColor.DARK_GRAY + "COMMAND > " + player.getName() + ": " + cmd);
+		//Util.sendAdminMessage(ChatColor.DARK_GRAY + "COMMAND > " + player.getName() + ": " + cmd);
 	}
 }
