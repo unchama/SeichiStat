@@ -25,8 +25,8 @@ public class MinuteTaskRunnable extends BukkitRunnable{
 
 	@Override
 	public void run() {
-		playermap = SeichiStat.playermap;
-		plugin = SeichiStat.plugin;
+		//playermap = SeichiStat.playermap;
+		//plugin = SeichiStat.plugin;
 		if(SeichiStat.DEBUG){
 			Util.sendEveryMessage("プレイヤーの１分間の処理を実行");
 		}
