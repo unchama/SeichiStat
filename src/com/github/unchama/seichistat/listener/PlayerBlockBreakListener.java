@@ -50,7 +50,7 @@ public class PlayerBlockBreakListener implements Listener {
 
 		//壊した場所のブロック設置破壊履歴を取得
 		//Util.getCoreProtect().blockLookup(block, 1000);
-		List<String[]> cresult = Util.getCoreProtect().blockLookup(block, 1000);
+		List<String[]> cresult = Util.getCoreProtect().blockLookup(block, 604800);
 
 		//他人の設置したブロック破壊を検出する部分ここから
 		if(SeichiStat.DEBUG){

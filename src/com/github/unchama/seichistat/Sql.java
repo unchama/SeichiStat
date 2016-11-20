@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
 import com.github.unchama.seichistat.data.PlayerData;
@@ -99,6 +100,10 @@ public class Sql{
 			plugin.getLogger().info("playerdataテーブル作成に失敗しました");
 			return false;
 		}
+		if(!createStaticDataTable(SeichiStat.STATICDATA_TABLENAME)){
+			plugin.getLogger().info("staticdataテーブル作成に失敗しました");
+			return false;
+		}
 
 		return true;
 	}
@@ -183,6 +188,7 @@ public class Sql{
 	 * @param table テーブル名
 	 * @return 成否
 	 */
+	//プレイヤーデータテーブル作成
 	public boolean createPlayerDataTable(String table){
 		if(table==null){
 			return false;
@@ -208,6 +214,36 @@ public class Sql{
 				",add column if not exists num_command int default 0" +
 				",add index if not exists name_index(name)" +
 				"";
+		return putCommand(command);
+	}
+
+	//Staticデータテーブル作成
+	public boolean createStaticDataTable(String table){
+		if(table==null){
+			return false;
+		}
+		//テーブルが存在しないときテーブルを新規作成
+		String command =
+				"CREATE TABLE IF NOT EXISTS " + table +
+				"(name varchar(30)," +
+				"uuid varchar(128))";
+		if(!putCommand(command)){
+			return false;
+		}
+		//必要なcolumnを随時追加
+		command =
+				"alter table " + table +
+				" add index if not exists name_index(name)" +
+				",add index if not exists uuid_index(uuid)" +
+				",add column if not exists date datetime default null" +
+				"";
+
+		//Bukkit.Statisticのenumの中身の値を全てカラムに追加
+		for(Statistic statistic : Statistic.values()){
+			command = command +
+					",add column if not exists `" + statistic.name() + "` int default 0";
+		}
+
 		return putCommand(command);
 	}
 

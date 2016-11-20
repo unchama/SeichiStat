@@ -20,6 +20,7 @@ import com.github.unchama.seichistat.listener.PlayerBucketListener;
 import com.github.unchama.seichistat.listener.PlayerChatListener;
 import com.github.unchama.seichistat.listener.PlayerJoinListener;
 import com.github.unchama.seichistat.listener.PlayerQuitListener;
+import com.github.unchama.seichistat.task.LogStaticsTaskRunnable;
 import com.github.unchama.seichistat.task.MinuteTaskRunnable;
 import com.github.unchama.seichistat.task.PlayerDataSaveTaskRunnable;
 import com.github.unchama.seichistat.util.Util;
@@ -34,6 +35,7 @@ public class SeichiStat  extends JavaPlugin {
 	public static Boolean DEBUG = false;
 
 	public static final String PLAYERDATA_TABLENAME = "playerdata";
+	public static final String STATICDATA_TABLENAME = "staticdata";
 
 	private HashMap<String, TabExecutor> commandlist;
 
@@ -121,8 +123,10 @@ public class SeichiStat  extends JavaPlugin {
 		//一定時間おきに処理を実行するタスク
 		if(DEBUG){
 			tasklist.add(new MinuteTaskRunnable().runTaskTimer(this,0,300));
+			tasklist.add(new LogStaticsTaskRunnable().runTaskTimer(this,0,300));
 		}else{
 			tasklist.add(new MinuteTaskRunnable().runTaskTimer(this,0,1200));
+			tasklist.add(new LogStaticsTaskRunnable().runTaskTimer(this,0,1200));
 		}
 	}
 
