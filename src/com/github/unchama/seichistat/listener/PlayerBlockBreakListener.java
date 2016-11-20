@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,9 +31,9 @@ public class PlayerBlockBreakListener implements Listener {
 		//実行したプレイヤーを取得
 		Player player = event.getPlayer();
 		//もしサバイバルでなければ処理を終了
-		if(!player.getGameMode().equals(GameMode.SURVIVAL)){
-			return;
-		}
+		//if(!player.getGameMode().equals(GameMode.SURVIVAL)){
+		//	return;
+		//}
 		//プレイヤー名を取得
 		String name = player.getName().toLowerCase();
 		//壊されるブロックを取得
@@ -78,6 +77,7 @@ public class PlayerBlockBreakListener implements Listener {
 						&& !n[1].equalsIgnoreCase(name)){
 					Util.sendAdminMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
 					plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
+					break;
 				}
 
 			}
