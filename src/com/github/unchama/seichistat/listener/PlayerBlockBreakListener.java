@@ -77,8 +77,9 @@ public class PlayerBlockBreakListener implements Listener {
 						&& !n[1].equalsIgnoreCase(name)){
 					Util.sendAdminMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
 					plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
-					break;
+
 				}
+				break;
 
 			}
 		}
