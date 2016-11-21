@@ -3,35 +3,28 @@ package com.github.unchama.seichistat.task;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.unchama.seichistat.SeichiStat;
 import com.github.unchama.seichistat.Sql;
+import com.github.unchama.seichistat.data.LogPlayerData;
 
-public class SendMineStaticsTaskRunnable extends BukkitRunnable {
+public class SendLogPlayerDataTaskRunnable extends BukkitRunnable{
 
 	private SeichiStat plugin = SeichiStat.plugin;
 	private Sql sql = SeichiStat.plugin.sql;
-	final String table;
+	final String table = SeichiStat.STATICDATA_GENERAL_TABLENAME;
 
 	String exc;
 	Statement stmt = null;
 	ResultSet rs = null;
 
-	String name;
-	UUID uuid;
-	HashMap<String,Integer> statmap;
+	LogPlayerData logplayerdata;
 
-	public SendMineStaticsTaskRunnable(String _name,UUID _uuid,HashMap<String,Integer> _statmap,String _table) {
-		name = _name;
-		uuid = _uuid;
-		statmap = _statmap;
-		table = _table;
+	public SendLogPlayerDataTaskRunnable(LogPlayerData _logplayerdata) {
+		logplayerdata = _logplayerdata;
 	}
 
 	@Override
@@ -46,32 +39,27 @@ public class SendMineStaticsTaskRunnable extends BukkitRunnable {
 		}
 
 		//引数を元にsql文を作成して送信する
-		String struuid = uuid.toString();
+		String struuid = logplayerdata.uuid.toString();
 		String command = "";
 
-		command = "insert into " + table + " (name,uuid";
-
-		//material内の数値をすべて列挙
-		for(Material material : Material.values()){
-			command = command +
-					",`" + material.name() + "`";
-		}
-
-		command = command +
-				",date) values('" + name+ "','" + struuid + "'";
-
-		//static内の数値をすべて列挙
-		for(Material material : Material.values()){
-			int n = -2;
-			if(!(statmap.get(material.name()) == null)){
-				n = statmap.get(material.name());
-			}
-			command = command +
-					",'" + n + "'";
-		}
-
-		command = command +
-				",cast( now() as datetime ))";
+		command = "insert into " + table + " ("
+				+ "name,uuid,date"
+				+ ",all_drop,all_pickup,all_mine_block,all_use_item"
+				+ ",all_break_item,all_craft_item,nowplace_world"
+				+ ",nowplace_x,nowplace_y,nowplace_z"
+				+ ") values("
+				+ "'" + logplayerdata.name+ "','" + struuid + "',cast( now() as datetime )"
+				+ ",'" + logplayerdata.all_drop + "'"
+				+ ",'" + logplayerdata.all_pickup + "'"
+				+ ",'" + logplayerdata.all_mine_block + "'"
+				+ ",'" + logplayerdata.all_use_item + "'"
+				+ ",'" + logplayerdata.all_break_item + "'"
+				+ ",'" + logplayerdata.all_craft_item + "'"
+				+ ",'" + logplayerdata.nowplace_world + "'"
+				+ ",'" + logplayerdata.nowplace_x + "'"
+				+ ",'" + logplayerdata.nowplace_y + "'"
+				+ ",'" + logplayerdata.nowplace_z + "'"
+				+ ")";
 
 		boolean result;
 
@@ -87,7 +75,7 @@ public class SendMineStaticsTaskRunnable extends BukkitRunnable {
 
  		if(/*i >= 4&&*/!result){
  			//諦める
- 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "のStatic_Materialデータ送信失敗");
+ 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + logplayerdata.name + "のStatic_Genralデータ送信失敗");
  			cancel();
  			return;
  		}else if(result){

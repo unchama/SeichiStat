@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.unchama.seichistat.Config;
 import com.github.unchama.seichistat.SeichiStat;
+import com.github.unchama.seichistat.data.LogPlayerData;
 import com.github.unchama.seichistat.data.PlayerData;
 import com.github.unchama.seichistat.util.Util;
 
@@ -55,21 +56,28 @@ public class LogStaticsTaskRunnable extends BukkitRunnable{
 
 			//map作成
 			final HashMap<String,Integer> minestatmap = new HashMap<String,Integer>();
+			final HashMap<String,Integer> usestatmap = new HashMap<String,Integer>();
 			//material
 			for(Material material : Material.values()){
 				int n = -1;
 				try{
 					n = p.getStatistic(Statistic.MINE_BLOCK, material);
 				}catch(IllegalArgumentException e){}
-				if(material.equals(Material.AIR)){
-					n = -1;
-				}
 				minestatmap.put(material.name(),n);
+
+				//nの値初期化
+				n = -1;
+				try{
+					n = p.getStatistic(Statistic.USE_ITEM, material);
+				}catch(IllegalArgumentException e){}
+				usestatmap.put(material.name(),n);
 			}
 
 			//mysqlへ送信
-			new SendMineStaticsTaskRunnable(name,uuid,minestatmap).runTaskAsynchronously(plugin);
+			new SendMineStaticsTaskRunnable(name,uuid,minestatmap,SeichiStat.STATICDATA_MINE_TABLENAME).runTaskAsynchronously(plugin);
+			new SendMineStaticsTaskRunnable(name,uuid,usestatmap,SeichiStat.STATICDATA_USE_TABLENAME).runTaskAsynchronously(plugin);
 
+			new SendLogPlayerDataTaskRunnable(new LogPlayerData(p)).runTaskAsynchronously(plugin);
 
 		}
 

@@ -109,6 +109,14 @@ public class Sql{
 			plugin.getLogger().info("staticdata_mineテーブル作成に失敗しました");
 			return false;
 		}
+		if(!createMineStaticDataTable(SeichiStat.STATICDATA_USE_TABLENAME)){
+			plugin.getLogger().info("staticdata_useテーブル作成に失敗しました");
+			return false;
+		}
+		if(!createLogPlayerDataTable(SeichiStat.STATICDATA_GENERAL_TABLENAME)){
+			plugin.getLogger().info("staticdata_generalテーブル作成に失敗しました");
+			return false;
+		}
 
 		return true;
 	}
@@ -218,6 +226,39 @@ public class Sql{
 				",add column if not exists num_cheatdabaa int default 0" +
 				",add column if not exists num_command int default 0" +
 				",add index if not exists name_index(name)" +
+				"";
+		return putCommand(command);
+	}
+
+	//ゼネラルログデータテーブル作成
+	public boolean createLogPlayerDataTable(String table){
+		if(table==null){
+			return false;
+		}
+		//テーブルが存在しないときテーブルを新規作成
+		String command =
+				"CREATE TABLE IF NOT EXISTS " + table +
+				"(id int primary key auto_increment,name varchar(30)," +
+				"uuid varchar(128))";
+		if(!putCommand(command)){
+			return false;
+		}
+		//必要なcolumnを随時追加
+		command =
+				"alter table " + table +
+				" add index if not exists name_index(name)" +
+				",add index if not exists uuid_index(uuid)" +
+				",add column if not exists date datetime default null" +
+				",add column if not exists all_drop int default 0" +
+				",add column if not exists all_pickup int default 0" +
+				",add column if not exists all_mine_block int default 0" +
+				",add column if not exists all_use_item int default 0" +
+				",add column if not exists all_break_item int default 0" +
+				",add column if not exists all_craft_item int default 0" +
+				",add column if not exists nowplace_world varchar(30) default null" +
+				",add column if not exists nowplace_x int default 0" +
+				",add column if not exists nowplace_y int default 0" +
+				",add column if not exists nowplace_z int default 0" +
 				"";
 		return putCommand(command);
 	}
