@@ -49,38 +49,48 @@ public class PlayerBlockBreakListener implements Listener {
 
 		//壊した場所のブロック設置破壊履歴を取得
 		//Util.getCoreProtect().blockLookup(block, 1000);
-		List<String[]> cresult = Util.getCoreProtect().blockLookup(block, 604800);
+		List<String[]> cresult = Util.getCoreProtect().blockLookup(block, 2592000);//604800秒=過去7日分,2592000=30日分
 
-		//他人の設置したブロック破壊を検出する部分ここから
+		//debug時、ブロックが破壊された地点に存在するcoreprotectのログを全出力する
 		if(SeichiStat.DEBUG){
-			//player.sendMessage(ChatColor.RED + "表示...");
-			String s = ChatColor.RED + "表示..." + ChatColor.RESET +"";
-			player.sendMessage(s);
+			player.sendMessage(ChatColor.RED + "表示...");
 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "表示...");
-		}
-		if(cresult != null){
-			for(String[] n : cresult){
-
-				if(SeichiStat.DEBUG){
-					player.sendMessage(n[1]);//プレイヤー名
-					player.sendMessage(n[7]);//0が破壊で1が設置
-
+			if(cresult != null){
+				for(String[] n : cresult){
 					StringBuffer buf = new StringBuffer();
 					for (int i = 0; i < n.length; i++) {
 					buf.append(" " + n[i]);
 					}
 					plugin.getServer().getConsoleSender().sendMessage(ChatColor.YELLOW + "" + buf.toString());
+					player.sendMessage(ChatColor.YELLOW + "" + buf.toString());
 					//s = s + "," + buf.toString();
 				}
+			}
+		}
 
-				if(n[7].equals("0")
+		//他人の設置したブロック破壊を検出する部分ここから
+		if(cresult != null){
+			//新しいログから順に精査していくfor文
+			for(String[] n : cresult){
+
+				//useログはスルー
+				if(n[7].equals("2")){
+					continue;
+				}
+
+				//ロールバックされてたらスルー
+				if(n[8].equals("1")){
+					continue;
+				}
+
+				//"自分以外"が"設置"したログの場合に通知
+				if(n[7].equals("1")
 						&& !n[1].equalsIgnoreCase(name)){
 					Util.sendAdminMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
 					plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
-
 				}
+				//直前のログさえ確認できればこれ以上の詮索は必要ないのでbreak
 				break;
-
 			}
 		}
 
