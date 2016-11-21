@@ -36,6 +36,7 @@ public class SeichiStat  extends JavaPlugin {
 
 	public static final String PLAYERDATA_TABLENAME = "playerdata";
 	public static final String STATICDATA_TABLENAME = "staticdata";
+	public static final String STATICDATA_MINE_TABLENAME = "staticdata_mine";
 
 	private HashMap<String, TabExecutor> commandlist;
 

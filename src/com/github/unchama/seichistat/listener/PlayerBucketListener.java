@@ -52,6 +52,7 @@ public class PlayerBucketListener implements Listener {
 				Location loc = player.getLocation();
 				Util.sendAdminMessage(ChatColor.RED + player.getName() + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
 				plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + player.getName() + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")付近で溶岩バケツを使用しました");
+				player.sendMessage(ChatColor.DARK_GRAY + "(β)マグマの設置を検知したゾ。ダバァしないようにネ");
 				return;
 
 			}

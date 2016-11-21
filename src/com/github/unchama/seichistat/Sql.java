@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
@@ -102,6 +103,10 @@ public class Sql{
 		}
 		if(!createStaticDataTable(SeichiStat.STATICDATA_TABLENAME)){
 			plugin.getLogger().info("staticdataテーブル作成に失敗しました");
+			return false;
+		}
+		if(!createMineStaticDataTable(SeichiStat.STATICDATA_MINE_TABLENAME)){
+			plugin.getLogger().info("staticdata_mineテーブル作成に失敗しました");
 			return false;
 		}
 
@@ -225,7 +230,7 @@ public class Sql{
 		//テーブルが存在しないときテーブルを新規作成
 		String command =
 				"CREATE TABLE IF NOT EXISTS " + table +
-				"(name varchar(30)," +
+				"(id int primary key auto_increment,name varchar(30)," +
 				"uuid varchar(128))";
 		if(!putCommand(command)){
 			return false;
@@ -242,6 +247,36 @@ public class Sql{
 		for(Statistic statistic : Statistic.values()){
 			command = command +
 					",add column if not exists `" + statistic.name() + "` int default 0";
+		}
+
+		return putCommand(command);
+	}
+
+	//MineStaticデータテーブル作成
+	public boolean createMineStaticDataTable(String table){
+		if(table==null){
+			return false;
+		}
+		//テーブルが存在しないときテーブルを新規作成
+		String command =
+				"CREATE TABLE IF NOT EXISTS " + table +
+				"(id int primary key auto_increment,name varchar(30)," +
+				"uuid varchar(128))";
+		if(!putCommand(command)){
+			return false;
+		}
+		//必要なcolumnを随時追加
+		command =
+				"alter table " + table +
+				" add index if not exists name_index(name)" +
+				",add index if not exists uuid_index(uuid)" +
+				",add column if not exists date datetime default null" +
+				"";
+
+		//Bukkit.Statisticのenumの中身の値を全てカラムに追加
+		for(Material material : Material.values()){
+			command = command +
+					",add column if not exists `" + material.name() + "` int default 0";
 		}
 
 		return putCommand(command);

@@ -7,17 +7,17 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Statistic;
+import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.github.unchama.seichistat.SeichiStat;
 import com.github.unchama.seichistat.Sql;
 
-public class SendStaticsTaskRunnable extends BukkitRunnable{
+public class SendMineStaticsTaskRunnable extends BukkitRunnable {
 
 	private SeichiStat plugin = SeichiStat.plugin;
 	private Sql sql = SeichiStat.plugin.sql;
-	final String table = SeichiStat.STATICDATA_TABLENAME;
+	final String table = SeichiStat.STATICDATA_MINE_TABLENAME;
 
 	String exc;
 	Statement stmt = null;
@@ -25,12 +25,12 @@ public class SendStaticsTaskRunnable extends BukkitRunnable{
 
 	String name;
 	UUID uuid;
-	HashMap<String,Integer> statmap;
+	HashMap<String,Integer> minestatmap;
 
-	public SendStaticsTaskRunnable(String _name,UUID _uuid,HashMap<String,Integer> _statmap) {
+	public SendMineStaticsTaskRunnable(String _name,UUID _uuid,HashMap<String,Integer> _minestatmap) {
 		name = _name;
 		uuid = _uuid;
-		statmap = _statmap;
+		minestatmap = _minestatmap;
 	}
 
 	@Override
@@ -50,19 +50,23 @@ public class SendStaticsTaskRunnable extends BukkitRunnable{
 
 		command = "insert into " + table + " (name,uuid";
 
-		//static内の数値をすべて列挙
-		for(Statistic statistic : Statistic.values()){
+		//material内の数値をすべて列挙
+		for(Material material : Material.values()){
 			command = command +
-					",`" + statistic.name() + "`";
+					",`" + material.name() + "`";
 		}
 
 		command = command +
 				",date) values('" + name+ "','" + struuid + "'";
 
 		//static内の数値をすべて列挙
-		for(Statistic statistic : Statistic.values()){
+		for(Material material : Material.values()){
+			int n = -2;
+			if(!(minestatmap.get(material.name()) == null)){
+				n = minestatmap.get(material.name());
+			}
 			command = command +
-					",'" + statmap.get(statistic.name()) + "'";
+					",'" + n + "'";
 		}
 
 		command = command +
@@ -82,7 +86,7 @@ public class SendStaticsTaskRunnable extends BukkitRunnable{
 
  		if(/*i >= 4&&*/!result){
  			//諦める
- 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "のStaticデータ送信失敗");
+ 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "のStatic_Mineデータ送信失敗");
  			cancel();
  			return;
  		}else if(result){

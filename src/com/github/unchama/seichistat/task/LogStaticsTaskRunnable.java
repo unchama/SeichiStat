@@ -3,6 +3,7 @@ package com.github.unchama.seichistat.task;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -44,14 +45,31 @@ public class LogStaticsTaskRunnable extends BukkitRunnable{
 				int n = -1;
 				try{
 					n = p.getStatistic(statistic);
-				}catch(IllegalArgumentException e){
-
-				}
+				}catch(IllegalArgumentException e){}
 				statmap.put(statistic.name(), n);
 			}
 
 			//mysqlへ送信
 			new SendStaticsTaskRunnable(name,uuid,statmap).runTaskAsynchronously(plugin);
+
+
+			//map作成
+			final HashMap<String,Integer> minestatmap = new HashMap<String,Integer>();
+			//material
+			for(Material material : Material.values()){
+				int n = -1;
+				try{
+					n = p.getStatistic(Statistic.MINE_BLOCK, material);
+				}catch(IllegalArgumentException e){}
+				if(material.equals(Material.AIR)){
+					n = -1;
+				}
+				minestatmap.put(material.name(),n);
+			}
+
+			//mysqlへ送信
+			new SendMineStaticsTaskRunnable(name,uuid,minestatmap).runTaskAsynchronously(plugin);
+
 
 		}
 
