@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,6 +47,12 @@ public class PlayerBlockBreakListener implements Listener {
 		UUID uuid = player.getUniqueId();
 		//UUIDを基にプレイヤーデータ取得
 		PlayerData playerdata = playermap.get(uuid);
+		//念のためエラー分岐
+		if(playerdata == null){
+			Bukkit.getLogger().warning(player.getName() + " -> PlayerData not found.");
+			Bukkit.getLogger().warning("PlayerBlockBreakListener.onPlayerWGEvent");
+			return;
+		}
 
 		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
 		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
@@ -127,9 +134,8 @@ public class PlayerBlockBreakListener implements Listener {
 		PlayerData playerdata = playermap.get(uuid);
 		//念のためエラー分岐
 		if(playerdata == null){
-			player.sendMessage(ChatColor.RED + "playerdataがありません。管理者に報告してください");
-			plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[blockplaceevent]でエラー発生");
-			plugin.getLogger().warning(player.getName() + "のplayerdataがありません。開発者に報告してください");
+			Bukkit.getLogger().warning(player.getName() + " -> PlayerData not found.");
+			Bukkit.getLogger().warning("PlayerBlockBreakListener.onPlayerCheaterEvent");
 			return;
 		}
 

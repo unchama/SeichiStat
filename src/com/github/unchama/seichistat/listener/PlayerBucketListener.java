@@ -3,6 +3,7 @@ package com.github.unchama.seichistat.listener;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,9 +43,8 @@ public class PlayerBucketListener implements Listener {
 				PlayerData playerdata = playermap.get(uuid);
 				//念のためエラー分岐
 				if(playerdata == null){
-					player.sendMessage(ChatColor.RED + "playerdataがありません。管理者に報告してください");
-					plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[まぐまだばぁ検知処理]でエラー発生");
-					plugin.getLogger().warning(player.getName() + "のplayerdataがありません。開発者に報告してください");
+					Bukkit.getLogger().warning(player.getName() + " -> PlayerData not found.");
+					Bukkit.getLogger().warning("PlayerBucketListener");
 					return;
 				}
 				playerdata.num_magmadabaa++;

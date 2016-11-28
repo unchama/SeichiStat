@@ -4,7 +4,7 @@ package com.github.unchama.seichistat.task;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -43,9 +43,8 @@ public class MinuteTaskRunnable extends BukkitRunnable{
 			PlayerData playerdata = playermap.get(uuid);
 			//念のためエラー分岐
 			if(playerdata == null){
-				p.sendMessage(ChatColor.RED + "playerdataの読込に失敗。管理者に報告してください");
-				plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + "SeichiStat[MituteTask]でエラー発生");
-				plugin.getLogger().warning(Util.getName(p)+ "のplayerdataの読込失敗。開発者に報告してください");
+				Bukkit.getLogger().warning(p.getName() + " -> PlayerData not found.");
+				Bukkit.getLogger().warning("MinuteTaskRunnable");
 				continue;
 			}
 			//総プレイ時間更新
