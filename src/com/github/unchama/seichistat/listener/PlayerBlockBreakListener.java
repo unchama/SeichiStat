@@ -47,6 +47,19 @@ public class PlayerBlockBreakListener implements Listener {
 		//UUIDを基にプレイヤーデータ取得
 		PlayerData playerdata = playermap.get(uuid);
 
+		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
+		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
+			playerdata.num_rgbreak ++;
+ 			if(SeichiStat.DEBUG){
+ 				player.sendMessage("num_rgblockの値:" + playerdata.num_rgbreak);
+ 			}
+			return;
+		}
+
+		/*
+		 * これより下、ワールドガードによる保護がない、または自身がメンバーかオーナーの保護の中で、ブロック破壊した時の処理
+		 */
+
 		//壊した場所のブロック設置破壊履歴を取得
 		//Util.getCoreProtect().blockLookup(block, 1000);
 		List<String[]> cresult = Util.getCoreProtect().blockLookup(block, 2592000);//604800秒=過去7日分,2592000=30日分
@@ -88,20 +101,12 @@ public class PlayerBlockBreakListener implements Listener {
 						&& !n[1].equalsIgnoreCase(name)){
 					Util.sendAdminMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
 					plugin.getServer().getConsoleSender().sendMessage(ChatColor.RED + name + "が(" + player.getWorld().getName() + " X:" + loc.getBlockX() + "/Y:" + loc.getBlockY() + "/Z:" + loc.getBlockZ() + ")で他人の設置したブロックを破壊しました");
+					playerdata.num_cpbreak ++;
 					//player.sendMessage(ChatColor.DARK_GRAY + "(β)他人が設置したブロックの破壊を検知したゾ");
 				}
 				//直前のログさえ確認できればこれ以上の詮索は必要ないのでbreak
 				break;
 			}
-		}
-
-		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
-		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
-			playerdata.num_rgbreak ++;
- 			if(SeichiStat.DEBUG){
- 				player.sendMessage("num_rgblockの値:" + playerdata.num_rgbreak);
- 			}
-			return;
 		}
 
 	}

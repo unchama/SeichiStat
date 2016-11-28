@@ -225,6 +225,7 @@ public class Sql{
 				",add column if not exists num_chat int default 0" +
 				",add column if not exists num_cheatdabaa int default 0" +
 				",add column if not exists num_command int default 0" +
+				",add column if not exists num_cpbreak int default 0" +
 				",add index if not exists name_index(name)" +
 				"";
 		return putCommand(command);
@@ -259,6 +260,8 @@ public class Sql{
 				",add column if not exists nowplace_x int default 0" +
 				",add column if not exists nowplace_y int default 0" +
 				",add column if not exists nowplace_z int default 0" +
+				",add column if not exists num_cpbreak int default 0" +
+				",add column if not exists num_magmadabaa int default 0" +
 				"";
 		return putCommand(command);
 	}

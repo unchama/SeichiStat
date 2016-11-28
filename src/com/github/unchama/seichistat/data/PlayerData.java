@@ -27,6 +27,8 @@ public class PlayerData {
 	public int num_cheatdabaa;
 	//コマンド試行回数
 	public int num_command;
+	//他人の設置ブロック破壊試行回数
+	public int num_cpbreak;
 
 
 	public PlayerData(Player player){
@@ -40,6 +42,7 @@ public class PlayerData {
 		num_chat = 0;
 		num_cheatdabaa = 0;
 		num_command = 0;
+		num_cpbreak = 0;
 	}
 
 	//オフラインかどうか

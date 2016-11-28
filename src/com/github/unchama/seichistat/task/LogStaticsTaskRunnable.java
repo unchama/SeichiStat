@@ -3,6 +3,7 @@ package com.github.unchama.seichistat.task;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -36,6 +37,14 @@ public class LogStaticsTaskRunnable extends BukkitRunnable{
 			String name = p.getName().toLowerCase();
 			//UUIDを取得
 			UUID uuid = p.getUniqueId();
+
+			PlayerData playerdata = playermap.get(uuid);
+			//念のためエラー分岐
+			if(playerdata == null){
+				Bukkit.getLogger().warning(p.getName() + " -> PlayerData not found.");
+				Bukkit.getLogger().warning("LogStaticsTaskRunnable");
+				continue;
+			}
 
 			//map作成
 			final HashMap<String,Integer> statmap = new HashMap<String,Integer>();
@@ -77,7 +86,7 @@ public class LogStaticsTaskRunnable extends BukkitRunnable{
 			new SendMineStaticsTaskRunnable(name,uuid,minestatmap,SeichiStat.STATICDATA_MINE_TABLENAME).runTaskAsynchronously(plugin);
 			new SendMineStaticsTaskRunnable(name,uuid,usestatmap,SeichiStat.STATICDATA_USE_TABLENAME).runTaskAsynchronously(plugin);
 
-			new SendLogPlayerDataTaskRunnable(new LogPlayerData(p)).runTaskAsynchronously(plugin);
+			new SendLogPlayerDataTaskRunnable(new LogPlayerData(p),playerdata).runTaskAsynchronously(plugin);
 
 		}
 

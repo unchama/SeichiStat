@@ -123,6 +123,7 @@ public class PlayerDataLoadTaskRunnable extends BukkitRunnable {
 	 				playerdata.num_chat = rs.getInt("num_chat");
 	 				playerdata.num_cheatdabaa = rs.getInt("num_cheatdabaa");
 	 				playerdata.num_command = rs.getInt("num_command");
+	 				playerdata.num_cpbreak = rs.getInt("num_cpbreak");
 			  }
 			rs.close();
 		} catch (SQLException e) {

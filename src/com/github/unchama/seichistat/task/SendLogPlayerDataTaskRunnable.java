@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.github.unchama.seichistat.SeichiStat;
 import com.github.unchama.seichistat.Sql;
 import com.github.unchama.seichistat.data.LogPlayerData;
+import com.github.unchama.seichistat.data.PlayerData;
 
 public class SendLogPlayerDataTaskRunnable extends BukkitRunnable{
 
@@ -22,9 +23,11 @@ public class SendLogPlayerDataTaskRunnable extends BukkitRunnable{
 	ResultSet rs = null;
 
 	LogPlayerData logplayerdata;
+	PlayerData playerdata;
 
-	public SendLogPlayerDataTaskRunnable(LogPlayerData _logplayerdata) {
+	public SendLogPlayerDataTaskRunnable(LogPlayerData _logplayerdata,PlayerData _playerdata) {
 		logplayerdata = _logplayerdata;
+		playerdata = _playerdata;
 	}
 
 	@Override
@@ -47,6 +50,7 @@ public class SendLogPlayerDataTaskRunnable extends BukkitRunnable{
 				+ ",all_drop,all_pickup,all_mine_block,all_use_item"
 				+ ",all_break_item,all_craft_item,nowplace_world"
 				+ ",nowplace_x,nowplace_y,nowplace_z"
+				+ ",num_cpbreak,num_magmadabaa"
 				+ ") values("
 				+ "'" + logplayerdata.name+ "','" + struuid + "',cast( now() as datetime )"
 				+ ",'" + logplayerdata.all_drop + "'"
@@ -59,6 +63,8 @@ public class SendLogPlayerDataTaskRunnable extends BukkitRunnable{
 				+ ",'" + logplayerdata.nowplace_x + "'"
 				+ ",'" + logplayerdata.nowplace_y + "'"
 				+ ",'" + logplayerdata.nowplace_z + "'"
+				+ ",'" + playerdata.num_cpbreak + "'"
+				+ ",'" + playerdata.num_magmadabaa + "'"
 				+ ")";
 
 		boolean result;

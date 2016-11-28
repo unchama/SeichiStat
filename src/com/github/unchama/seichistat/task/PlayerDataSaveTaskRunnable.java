@@ -74,6 +74,7 @@ public class PlayerDataSaveTaskRunnable extends BukkitRunnable {
 				+ ",num_chat = " + Integer.toString(playerdata.num_chat)
 				+ ",num_cheatdabaa = " + Integer.toString(playerdata.num_cheatdabaa)
 				+ ",num_command = " + Integer.toString(playerdata.num_command)
+				+ ",num_cpbreak = " + Integer.toString(playerdata.num_cpbreak)
 				;
 
 		//loginflag折る処理
