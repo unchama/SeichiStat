@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import com.github.unchama.seichistat.SeichiStat;
 import com.github.unchama.seichistat.data.PlayerData;
 import com.github.unchama.seichistat.util.Util;
+import com.sk89q.worldguard.LocalPlayer;
 
 
 public class PlayerBlockBreakListener implements Listener {
@@ -54,7 +55,8 @@ public class PlayerBlockBreakListener implements Listener {
 			return;
 		}
 
-		//壊されるブロックがワールドガード範囲だった場合数値をプラス1して処理を終了
+		//壊されるブロックがワールドガードによる建築不可範囲だった場合数値をプラス1して処理を終了
+		//必ずしも保護が無いとは限らない(build=allowのところとかはこのif文はスルーする)
 		if(!Util.getWorldGuard().canBuild(player, block.getLocation())){
 			playerdata.num_rgbreak ++;
  			if(SeichiStat.DEBUG){
@@ -62,9 +64,55 @@ public class PlayerBlockBreakListener implements Listener {
  			}
 			return;
 		}
+		LocalPlayer localPlayer = Util.getWorldGuard().wrapPlayer(player);
+		/*
+		Set<ProtectedRegion> protectedRegion = Util.getWorldGuard()
+		.getRegionManager(player.getWorld())
+		.getApplicableRegions(player.getLocation()).getRegions();
+		*/
+
+		//1個でも保護がかかってたらreturn
+		if(Util.getWorldGuard()
+		.getRegionManager(player.getWorld())
+		.getApplicableRegions(player.getLocation()).size() > 0){
+ 			if(SeichiStat.DEBUG){
+ 				player.sendMessage(ChatColor.DARK_GRAY + "保護が1個以上かかってるのでreturn");
+ 			}
+			return;
+		}
 
 		/*
-		 * これより下、ワールドガードによる保護がない、または自身がメンバーかオーナーの保護の中で、ブロック破壊した時の処理
+		for(ProtectedRegion protectedRegion : Util.getWorldGuard()
+				.getRegionManager(player.getWorld())
+				.getApplicableRegions(player.getLocation()).getRegions()){
+			/*
+			 * ここでやりたいこと
+			 * buildflagがallowなら判定しない
+			 * 自身がOwnerの土地内では判定しない
+			 *//*
+			if(protectedRegion.isOwner(localPlayer)){
+	 			if(SeichiStat.DEBUG){
+	 				player.sendMessage(ChatColor.DARK_GRAY + "自身がownerの土地なのでreturn");
+	 			}
+				return;
+			}
+			if(protectedRegion.isMember(localPlayer)){
+	 			if(SeichiStat.DEBUG){
+	 				player.sendMessage(ChatColor.DARK_GRAY + "自身がmemberの土地なのでreturn");
+	 			}
+	 			return;
+			}
+
+			for(Object obj :protectedRegion.getFlags().values()){
+				player.sendMessage(ChatColor.DARK_GRAY + obj.toString());
+				plugin.getServer().getConsoleSender().sendMessage(ChatColor.DARK_GRAY + obj.toString());
+			}
+
+		}
+		*/
+
+		/*
+		 * これより下、ワールドガードによる保護がないところでブロック破壊した時の処理
 		 */
 
 		//壊した場所のブロック設置破壊履歴を取得
